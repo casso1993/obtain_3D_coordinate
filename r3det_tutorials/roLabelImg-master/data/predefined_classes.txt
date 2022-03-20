@@ -1,0 +1,10 @@
+bulb
+goggles
+hammar
+orange
+egg
+pear
+soft
+brittle
+hard
+banana

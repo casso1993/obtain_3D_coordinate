@@ -1,0 +1,36 @@
+#pytorch 1.6
+#torchvision 0.7
+#cudatoolkit 10.1
+#mmd2.1
+
+#mmcv 0.5.9
+MMCV_WITH_OPS=1 pip install -e .
+
+#r3det
+python setup.py build develop
+
+pip install pycocotools
+
+#准备数据集
+1、安装roLabelImg   https://github.com/cgvict/roLabelImg
+   下载后放在没有中文路径的目录解压
+2、把所有图片改成png格式，运行rtools/change2png.py
+3、先删除anaconda环境变量，然后运行下面的命令，python2x环境
+sudo apt-get install pyqt4-dev-tools
+sudo pip install lxml
+make all
+./roLabelImg.py
+4、打标签
+5、把xml文件转成训练txt文件，运行roxml_to_dota.py
+6、把文件放在train和val文件夹里面
+7、在项目根目录里面，运行rtools/dota_image_split.py
+
+#开始训练
+1、修改mmdet/datasets/dotav1.py中CLASSES
+2、修改configs/r3det/models/r3det_r50_fpn.py中num_classes 三处地方
+3、修改configs/r3det/schedules/schedule_1x.py中训练次数和学习率
+4、修改configs/r3det/r3det_r50_fpn_2x_CustomizeImageSplit.py中两个interval
+5、修改changer3det.py中的num_class，并运行生成新权重
+6、修改configs/r3det/r3det_r50_fpn_2x_CustomizeImageSplit.py中load_from=新生成权重
+5、python tools/train.py configs/r3det/r3det_r50_fpn_2x_CustomizeImageSplit.py
+6、python demo/image_demo.py demo/2.png configs/r3det/r3det_r50_fpn_2x_CustomizeImageSplit.py work_dirs/r3det_r50_fpn_2x_20200616/epoch_50.pth --score-thr 0.7
